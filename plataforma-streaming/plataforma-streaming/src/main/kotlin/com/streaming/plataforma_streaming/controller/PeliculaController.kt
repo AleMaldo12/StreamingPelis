@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.data.domain.Page
 
+@CrossOrigin(origins = ["*"]) // Permite que cualquier web consuma tu API
 @RestController
 @RequestMapping("/api/peliculas")
 class PeliculaController(private val service: PeliculaService) {

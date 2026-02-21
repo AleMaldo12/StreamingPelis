@@ -17,5 +17,8 @@ data class Pelicula(
     val anioLanzamiento: Int,
 
     @Column(length = 500)
-    val sinopsis: String
+    val sinopsis: String,
+
+    // En tu clase Pelicula
+    var urlImagen: String? = null // Añade este campo
 )

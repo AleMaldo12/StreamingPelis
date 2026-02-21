@@ -38,7 +38,8 @@ class PeliculaService(private val repository: PeliculaRepository) {
             titulo = datosNuevos.titulo,
             genero = datosNuevos.genero,
             anioLanzamiento = datosNuevos.anioLanzamiento,
-            sinopsis = datosNuevos.sinopsis
+            sinopsis = datosNuevos.sinopsis,
+            urlImagen = datosNuevos.urlImagen // <--- No olvides este
         )
         return repository.save(actualizada)
     }
