@@ -34,7 +34,7 @@ class UsuarioController(private val service: UsuarioService) {
             ResponseEntity.status(401).body(mapOf("error" to "Credenciales incorrectas"))
         }
     }
-    
+
     @GetMapping
     fun listarTodos(): List<Usuario> = service.listarTodos() // Asegúrate que el service tenga esta función
 

@@ -20,5 +20,7 @@ data class Pelicula(
     val sinopsis: String,
 
     // En tu clase Pelicula
-    var urlImagen: String? = null // Añade este campo
+    var urlImagen: String? = null, // Añade este campo
+
+    val urlTrailer: String?
 )
