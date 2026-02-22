@@ -2,103 +2,107 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Películas - Pelicula</title>
+    <title>Registrar Película - Pelicula Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black text-white font-sans">
+<body class="bg-black text-white min-h-screen font-sans">
 
-    <nav class="p-6 bg-zinc-900 border-b border-zinc-800 flex justify-between">
-        <button onclick="location.href='dashboard.html'" class="text-gray-400 hover:text-white">← Volver al Panel</button>
-        <h1 class="text-xl font-black text-red-600 tracking-tighter">NUEVA PELÍCULA</h1>
-        <div></div>
+    <nav class="p-6 bg-zinc-900 border-b border-zinc-800 flex justify-between items-center shadow-xl">
+        <button onclick="location.href='dashboard.html'" class="text-zinc-400 hover:text-white transition">← Volver al Panel</button>
+        <h1 class="text-xl font-black text-red-600 tracking-tighter">NUEVO CONTENIDO CLOUD</h1>
+        <div class="w-20"></div>
     </nav>
 
-    <div class="max-w-5xl mx-auto mt-8 p-8 bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            
-            <form id="formPelicula" class="lg:col-span-2 space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Título</label>
-                        <input type="text" id="titulo" required placeholder="Ej: Oppenheimer"
-                               class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Año de Lanzamiento</label>
-                        <input type="number" id="anioLanzamiento" required placeholder="2023"
-                               class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
-                    </div>
-                </div>
-
+    <div class="max-w-3xl mx-auto mt-12 p-8 bg-zinc-900 rounded-2xl border border-zinc-800 shadow-2xl">
+        <form id="formPelicula" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Género</label>
-                    <select id="genero" class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none">
+                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Título</label>
+                    <input type="text" id="titulo" required placeholder="Ej: Batman"
+                           class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Año</label>
+                    <input type="number" id="anioLanzamiento" required placeholder="2026"
+                           class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Género</label>
+                    <select id="genero" class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
                         <option value="Acción">Acción</option>
-                        <option value="Drama">Drama</option>
                         <option value="Ciencia Ficción">Ciencia Ficción</option>
+                        <option value="Drama">Drama</option>
                         <option value="Terror">Terror</option>
                         <option value="Comedia">Comedia</option>
                     </select>
                 </div>
-
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">URL del Póster</label>
-                    <input type="url" id="urlImagen" required placeholder="https://link-a-la-imagen.jpg"
-                           oninput="document.getElementById('previewImg').src = this.value"
+                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Póster (URL)</label>
+                    <input type="url" id="urlImagen" required placeholder="https://image.com/post.jpg"
                            class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
                 </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Sinopsis (Máx 500 caracteres)</label>
-                    <textarea id="sinopsis" required rows="4" maxlength="500" placeholder="Escribe un breve resumen..."
-                              class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition resize-none"></textarea>
-                </div>
-
-                <button type="submit" class="w-full bg-red-600 py-4 rounded-xl font-bold hover:bg-red-700 transition shadow-lg shadow-red-900/20">
-                    REGISTRAR PELÍCULA
-                </button>
-            </form>
-
-            <div class="flex flex-col items-center border-l border-zinc-800 lg:pl-10">
-                <span class="text-xs font-bold text-gray-500 uppercase mb-4">Vista Previa</span>
-                <div class="w-full aspect-[2/3] bg-zinc-800 rounded-xl overflow-hidden border border-zinc-700 shadow-2xl">
-                    <img id="previewImg" src="https://via.placeholder.com/400x600?text=Sin+Imagen" 
-                         class="w-full h-full object-cover">
-                </div>
-                <p class="text-xs text-gray-600 mt-4 text-center italic">Asegúrate de que la URL de la imagen termine en .jpg o .png</p>
             </div>
 
-        </div>
+            <div>
+                <label class="block text-xs font-bold text-red-500 uppercase mb-2 tracking-widest">ID del Tráiler de YouTube</label>
+                <input type="text" id="urlTrailer" placeholder="Ej: dQw4w9WgXcQ" 
+                       class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
+                <p class="text-[10px] text-zinc-500 mt-1 italic">Copia el código que aparece en la URL después de "v="</p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Sinopsis</label>
+                <textarea id="sinopsis" required rows="3" placeholder="Resumen de la película..."
+                          class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none resize-none transition"></textarea>
+            </div>
+
+            <button type="submit" id="btnGuardar"
+                    class="w-full bg-red-600 py-4 rounded-xl font-bold hover:bg-red-700 transition transform active:scale-95 shadow-lg shadow-red-900/20">
+                PUBLICAR EN AWS RDS
+            </button>
+        </form>
     </div>
 
     <script>
+        const API_URL = "http://pelicula-api.us-east-2.elasticbeanstalk.com/api/peliculas";
+
         document.getElementById('formPelicula').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const pelicula = {
+            const btn = document.getElementById('btnGuardar');
+            btn.innerHTML = "Subiendo a la nube...";
+            btn.disabled = true;
+
+            const nuevaPelicula = {
                 titulo: document.getElementById('titulo').value,
                 genero: document.getElementById('genero').value,
                 anioLanzamiento: parseInt(document.getElementById('anioLanzamiento').value),
                 sinopsis: document.getElementById('sinopsis').value,
-                urlImagen: document.getElementById('urlImagen').value
+                urlImagen: document.getElementById('urlImagen').value,
+                urlTrailer: document.getElementById('urlTrailer').value // Nuevo campo
             };
 
             try {
-                const response = await fetch("http://localhost:8080/api/peliculas", {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(pelicula)
+                    body: JSON.stringify(nuevaPelicula)
                 });
 
                 if (response.ok) {
-                    alert("✅ Película guardada en AWS RDS");
-                    location.reload();
+                    alert("✅ ¡Película publicada exitosamente en la infraestructura de AWS!");
+                    location.href = 'monitoreo-peliculas.html';
                 } else {
-                    const err = await response.json();
-                    alert("❌ Error: " + (err.message || "No se pudo guardar"));
+                    alert("❌ Error al registrar en la base de datos.");
+                    btn.innerHTML = "PUBLICAR EN AWS RDS";
+                    btn.disabled = false;
                 }
             } catch (error) {
-                alert("❌ Error de conexión con el servidor");
+                alert("❌ Error de comunicación con Elastic Beanstalk.");
+                btn.innerHTML = "PUBLICAR EN AWS RDS";
+                btn.disabled = false;
             }
         });
     </script>

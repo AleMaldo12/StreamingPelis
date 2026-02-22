@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoreo - Pelicula Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-zinc-200 min-h-screen font-sans">
+
+    <nav class="p-6 bg-zinc-900 border-b border-zinc-800 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-8">
+            <h1 class="text-2xl font-black text-red-600 tracking-tighter">PELICULA ADMIN</h1>
+            <div class="hidden md:flex gap-6 text-sm font-medium">
+                <a href="dashboard.html" class="hover:text-white transition">Dashboard</a>
+                <a href="reg-peliculas.html" class="hover:text-white transition">Registrar Nueva</a>
+                <a href="#" class="text-red-500">Monitoreo</a>
+            </div>
+        </div>
+        <button onclick="location.href='index.html'" class="text-sm bg-zinc-800 px-4 py-2 rounded-lg hover:bg-zinc-700 transition">Ver Sitio Público</button>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 md:p-10">
+        <header class="flex justify-between items-end mb-10">
+            <div>
+                <h2 class="text-4xl font-bold text-white">Monitoreo de Catálogo</h2>
+                <p class="text-zinc-500 mt-2">Gestiona las películas almacenadas en AWS RDS</p>
+            </div>
+            <span id="contador" class="bg-red-600/10 text-red-500 border border-red-600/20 px-4 py-1 rounded-full text-sm font-bold">
+                0 Películas
+            </span>
+        </header>
+
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden shadow-2xl">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-zinc-800/50 text-zinc-400 text-xs uppercase tracking-wider">
+                        <th class="p-5 font-bold">Póster</th>
+                        <th class="p-5 font-bold">Título</th>
+                        <th class="p-5 font-bold">Género</th>
+                        <th class="p-5 font-bold">Año</th>
+                        <th class="p-5 font-bold text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-cuerpo" class="divide-y divide-zinc-800">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // URL de tu API en AWS
+        const API_URL = "http://pelicula-api.us-east-2.elasticbeanstalk.com/api/peliculas";
+
+        async function cargarPeliculas() {
+            try {
+                const res = await fetch(API_URL);
+                const peliculas = await res.json();
+                
+                document.getElementById('contador').innerText = `${peliculas.length} Películas`;
+                const tbody = document.getElementById('tabla-cuerpo');
+                
+                if (peliculas.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-10 text-center text-zinc-500">No hay películas en la base de datos de AWS.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = peliculas.map(p => `
+                    <tr class="hover:bg-zinc-800/30 transition group">
+                        <td class="p-5">
+                            <img src="${p.urlImagen}" class="w-12 h-16 object-cover rounded shadow-lg border border-zinc-700">
+                        </td>
+                        <td class="p-5 text-white font-medium">${p.titulo}</td>
+                        <td class="p-5 text-zinc-400">${p.genero}</td>
+                        <td class="p-5 text-zinc-400">${p.anioLanzamiento}</td>
+                        <td class="p-5 text-center">
+                            <div class="flex justify-center gap-3">
+                                <button onclick="editar(${p.id})" class="p-2 hover:bg-blue-500/10 text-blue-500 rounded-lg transition">
+                                    Editar
+                                </button>
+                                <button onclick="borrar(${p.id})" class="p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition">
+                                    Borrar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error("Error cargando desde AWS:", error);
+                alert("No se pudo conectar con la API de AWS.");
+            }
+        }
+
+        async function borrar(id) {
+            if (confirm('¿Estás seguro de eliminar esta película? Esta acción borrará el registro de AWS RDS permanentemente.')) {
+                try {
+                    const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        cargarPeliculas(); // Recargar tabla
+                    } else {
+                        alert("Error al eliminar.");
+                    }
+                } catch (error) {
+                    alert("Error de conexión con el servidor.");
+                }
+            }
+        }
+
+        function editar(id) {
+            localStorage.setItem('idPeliculaEditar', id);
+            location.href = 'editar-pelicula.html';
+        }
+
+        // Carga inicial
+        window.onload = cargarPeliculas;
+    </script>
+</body>
+</html>

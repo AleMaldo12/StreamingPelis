@@ -5,130 +5,117 @@
     <title>Editar Película - Pelicula Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black text-white font-sans">
+<body class="bg-black text-white min-h-screen font-sans">
 
-    <nav class="p-6 bg-zinc-900 border-b border-zinc-800 flex justify-between items-center">
-        <button onclick="location.href='monitoreo-peliculas.html'" class="text-gray-400 hover:text-white">← Volver al Monitoreo</button>
-        <h1 class="text-xl font-black text-blue-500 tracking-tighter">EDITAR CONTENIDO</h1>
-        <div class="text-xs text-zinc-500">ID: <span id="display-id">--</span></div>
+    <nav class="p-6 bg-zinc-900 border-b border-zinc-800 flex justify-between items-center shadow-xl">
+        <button onclick="location.href='monitoreo-peliculas.html'" class="text-zinc-400 hover:text-white transition">← Cancelar y Volver</button>
+        <h1 class="text-xl font-black text-red-600 tracking-tighter">MODIFICAR CONTENIDO EN CLOUD</h1>
+        <div class="w-20"></div>
     </nav>
 
-    <div class="max-w-5xl mx-auto mt-8 p-8 bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <div class="max-w-2xl mx-auto mt-12 p-8 bg-zinc-900 rounded-2xl border border-zinc-800 shadow-2xl">
+        <form id="formEditar" class="space-y-5">
+            <input type="hidden" id="peliculaId">
             
-            <form id="formEditar" class="lg:col-span-2 space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Título</label>
-                        <input type="text" id="titulo" required 
-                               class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Año</label>
-                        <input type="number" id="anioLanzamiento" required 
-                               class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none">
-                    </div>
-                </div>
+            <div>
+                <label class="block text-xs font-bold text-zinc-500 uppercase mb-2 tracking-widest">Título de la Obra</label>
+                <input type="text" id="titulo" required class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
+            </div>
 
+            <div class="grid grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Género</label>
-                    <select id="genero" class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none">
-                        <option value="Acción">Acción</option>
-                        <option value="Drama">Drama</option>
-                        <option value="Ciencia Ficción">Ciencia Ficción</option>
-                        <option value="Terror">Terror</option>
-                        <option value="Comedia">Comedia</option>
-                    </select>
+                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-2 tracking-widest">Género</label>
+                    <input type="text" id="genero" required class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
                 </div>
-
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">URL del Póster</label>
-                    <input type="url" id="urlImagen" required 
-                           oninput="document.getElementById('previewImg').src = this.value"
-                           class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Sinopsis</label>
-                    <textarea id="sinopsis" required rows="4" maxlength="500"
-                              class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none resize-none"></textarea>
-                </div>
-
-                <div class="flex gap-4">
-                    <button type="submit" class="flex-1 bg-blue-600 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-900/20">
-                        GUARDAR CAMBIOS EN AWS
-                    </button>
-                </div>
-            </form>
-
-            <div class="flex flex-col items-center border-l border-zinc-800 lg:pl-10">
-                <span class="text-xs font-bold text-gray-500 uppercase mb-4">Vista Previa Actual</span>
-                <div class="w-full aspect-[2/3] bg-zinc-800 rounded-xl overflow-hidden border border-zinc-700 shadow-2xl">
-                    <img id="previewImg" src="" class="w-full h-full object-cover">
+                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-2 tracking-widest">Año de Lanzamiento</label>
+                    <input type="number" id="anio" required class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
                 </div>
             </div>
 
-        </div>
+            <div>
+                <label class="block text-xs font-bold text-zinc-500 uppercase mb-2 tracking-widest">URL del Póster (Imagen)</label>
+                <input type="url" id="urlImagen" required class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-red-500 uppercase mb-2 tracking-widest">ID del Tráiler (YouTube)</label>
+                <input type="text" id="urlTrailer" placeholder="Ej: dQw4w9WgXcQ" 
+                       class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
+                <p class="text-[10px] text-zinc-500 mt-1 italic">Solo el código después del 'v=' en la URL de YouTube.</p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-zinc-500 uppercase mb-2 tracking-widest">Sinopsis Detallada</label>
+                <textarea id="sinopsis" rows="4" required class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none resize-none transition"></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-900/30 transform active:scale-95">
+                SINCRONIZAR CAMBIOS CON AWS RDS
+            </button>
+        </form>
     </div>
 
     <script>
-        const API_URL = "http://localhost:8080/api/peliculas";
-        const peliculaId = localStorage.getItem('editandoId');
+        const API_URL = "http://pelicula-api.us-east-2.elasticbeanstalk.com/api/peliculas";
+        const idParaEditar = localStorage.getItem('idPeliculaEditar');
 
-        // 1. Cargar datos al iniciar
+        // 1. Cargar datos actuales desde AWS
         async function cargarDatos() {
-            if (!peliculaId) {
-                alert("No se seleccionó ninguna película.");
+            if (!idParaEditar) {
+                alert("No se detectó ID de película. Volviendo al monitoreo.");
                 location.href = 'monitoreo-peliculas.html';
                 return;
             }
 
             try {
-                const res = await fetch(`${API_URL}/${peliculaId}`);
-                if (!res.ok) throw new Error("No se encontró la película");
-                
+                const res = await fetch(`${API_URL}/${idParaEditar}`);
                 const p = await res.json();
-                
-                // Rellenar campos
-                document.getElementById('display-id').innerText = p.id;
+
+                document.getElementById('peliculaId').value = p.id;
                 document.getElementById('titulo').value = p.titulo;
-                document.getElementById('anioLanzamiento').value = p.anioLanzamiento;
                 document.getElementById('genero').value = p.genero;
-                document.getElementById('sinopsis').value = p.sinopsis;
+                document.getElementById('anio').value = p.anioLanzamiento;
                 document.getElementById('urlImagen').value = p.urlImagen;
-                document.getElementById('previewImg').src = p.urlImagen;
+                document.getElementById('urlTrailer').value = p.urlTrailer || ""; // Carga el trailer si existe
+                document.getElementById('sinopsis').value = p.sinopsis;
             } catch (error) {
-                alert("Error cargando los datos de AWS.");
+                console.error("Error al cargar datos:", error);
+                alert("Error al obtener datos desde la nube.");
             }
         }
 
-        // 2. Enviar actualización (PUT)
+        // 2. Enviar actualización vía PUT
         document.getElementById('formEditar').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const peliculaEditada = {
+
+            const peliculaActualizada = {
+                id: parseInt(document.getElementById('peliculaId').value),
                 titulo: document.getElementById('titulo').value,
                 genero: document.getElementById('genero').value,
-                anioLanzamiento: parseInt(document.getElementById('anioLanzamiento').value),
-                sinopsis: document.getElementById('sinopsis').value,
-                urlImagen: document.getElementById('urlImagen').value
+                anioLanzamiento: parseInt(document.getElementById('anio').value),
+                urlImagen: document.getElementById('urlImagen').value,
+                urlTrailer: document.getElementById('urlTrailer').value, // Envia el nuevo campo
+                sinopsis: document.getElementById('sinopsis').value
             };
 
             try {
-                const response = await fetch(`${API_URL}/${peliculaId}`, {
+                const response = await fetch(`${API_URL}/${idParaEditar}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(peliculaEditada)
+                    body: JSON.stringify(peliculaActualizada)
                 });
 
                 if (response.ok) {
-                    alert("✅ Cambios guardados correctamente en RDS");
+                    alert("✅ Cambios guardados en AWS exitosamente.");
                     location.href = 'monitoreo-peliculas.html';
                 } else {
-                    alert("❌ Error al actualizar");
+                    const errorMsg = await response.text();
+                    alert("❌ Error al actualizar: " + errorMsg);
                 }
             } catch (error) {
-                alert("❌ Error de comunicación con el servidor");
+                console.error("Error en el PUT:", error);
+                alert("❌ Error de conexión con Elastic Beanstalk.");
             }
         });
 

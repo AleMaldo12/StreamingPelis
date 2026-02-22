@@ -65,7 +65,7 @@
 
             try {
                 // Llamada a tu API de Kotlin
-                const respuesta = await fetch("http://localhost:8080/api/usuarios/login", {
+                const respuesta = await fetch("http://pelicula-api.us-east-2.elasticbeanstalk.com/api/usuarios/login", {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(credenciales)
