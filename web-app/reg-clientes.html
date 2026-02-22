@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Clientes - Pelicula</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white font-sans">
+
+    <nav class="p-6 bg-zinc-900 border-b border-zinc-800 flex justify-between">
+        <button onclick="location.href='dashboard.html'" class="text-gray-400 hover:text-white">← Volver al Panel</button>
+        <h1 class="text-xl font-black text-blue-500 tracking-tighter">GESTIÓN DE CLIENTES</h1>
+        <div></div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto mt-10 p-8 bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800">
+        <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+            <span>👤</span> Nuevo Cliente
+        </h2>
+
+        <form id="formCliente" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Nombre Completo</label>
+                    <input type="text" id="nombreCliente" required placeholder="Juan Pérez"
+                           class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Correo Electrónico</label>
+                    <input type="email" id="emailCliente" required placeholder="juan@ejemplo.com"
+                           class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Plan de Suscripción</label>
+                    <select id="plan" class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none">
+                        <option value="Básico">Básico (SD)</option>
+                        <option value="Estándar">Estándar (HD)</option>
+                        <option value="Premium">Premium (4K + HDR)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Estado Inicial</label>
+                    <select id="estado" class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none">
+                        <option value="ACTIVO">Activo</option>
+                        <option value="PENDIENTE">Pendiente de Pago</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-900/20">
+                REGISTRAR CLIENTE EN AWS
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('formCliente').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const cliente = {
+                nombre: document.getElementById('nombreCliente').value,
+                email: document.getElementById('emailCliente').value,
+                plan: document.getElementById('plan').value,
+                estado: document.getElementById('estado').value,
+                fechaRegistro: new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
+            };
+
+            try {
+                // Nota: Asegúrate de tener un ClienteController en tu API para este endpoint
+                const response = await fetch("http://localhost:8080/api/clientes", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cliente)
+                });
+
+                if (response.ok) {
+                    alert("✅ Cliente registrado correctamente en RDS");
+                    location.reload();
+                } else {
+                    alert("❌ Error al registrar: Verifica que el endpoint /api/clientes exista");
+                }
+            } catch (error) {
+                alert("❌ Error de conexión");
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Película - Pelicula Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white font-sans">
+
+    <nav class="p-6 bg-zinc-900 border-b border-zinc-800 flex justify-between items-center">
+        <button onclick="location.href='monitoreo-peliculas.html'" class="text-gray-400 hover:text-white">← Volver al Monitoreo</button>
+        <h1 class="text-xl font-black text-blue-500 tracking-tighter">EDITAR CONTENIDO</h1>
+        <div class="text-xs text-zinc-500">ID: <span id="display-id">--</span></div>
+    </nav>
+
+    <div class="max-w-5xl mx-auto mt-8 p-8 bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            
+            <form id="formEditar" class="lg:col-span-2 space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Título</label>
+                        <input type="text" id="titulo" required 
+                               class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Año</label>
+                        <input type="number" id="anioLanzamiento" required 
+                               class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Género</label>
+                    <select id="genero" class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none">
+                        <option value="Acción">Acción</option>
+                        <option value="Drama">Drama</option>
+                        <option value="Ciencia Ficción">Ciencia Ficción</option>
+                        <option value="Terror">Terror</option>
+                        <option value="Comedia">Comedia</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">URL del Póster</label>
+                    <input type="url" id="urlImagen" required 
+                           oninput="document.getElementById('previewImg').src = this.value"
+                           class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Sinopsis</label>
+                    <textarea id="sinopsis" required rows="4" maxlength="500"
+                              class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-blue-500 outline-none resize-none"></textarea>
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-blue-600 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-900/20">
+                        GUARDAR CAMBIOS EN AWS
+                    </button>
+                </div>
+            </form>
+
+            <div class="flex flex-col items-center border-l border-zinc-800 lg:pl-10">
+                <span class="text-xs font-bold text-gray-500 uppercase mb-4">Vista Previa Actual</span>
+                <div class="w-full aspect-[2/3] bg-zinc-800 rounded-xl overflow-hidden border border-zinc-700 shadow-2xl">
+                    <img id="previewImg" src="" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8080/api/peliculas";
+        const peliculaId = localStorage.getItem('editandoId');
+
+        // 1. Cargar datos al iniciar
+        async function cargarDatos() {
+            if (!peliculaId) {
+                alert("No se seleccionó ninguna película.");
+                location.href = 'monitoreo-peliculas.html';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/${peliculaId}`);
+                if (!res.ok) throw new Error("No se encontró la película");
+                
+                const p = await res.json();
+                
+                // Rellenar campos
+                document.getElementById('display-id').innerText = p.id;
+                document.getElementById('titulo').value = p.titulo;
+                document.getElementById('anioLanzamiento').value = p.anioLanzamiento;
+                document.getElementById('genero').value = p.genero;
+                document.getElementById('sinopsis').value = p.sinopsis;
+                document.getElementById('urlImagen').value = p.urlImagen;
+                document.getElementById('previewImg').src = p.urlImagen;
+            } catch (error) {
+                alert("Error cargando los datos de AWS.");
+            }
+        }
+
+        // 2. Enviar actualización (PUT)
+        document.getElementById('formEditar').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const peliculaEditada = {
+                titulo: document.getElementById('titulo').value,
+                genero: document.getElementById('genero').value,
+                anioLanzamiento: parseInt(document.getElementById('anioLanzamiento').value),
+                sinopsis: document.getElementById('sinopsis').value,
+                urlImagen: document.getElementById('urlImagen').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/${peliculaId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(peliculaEditada)
+                });
+
+                if (response.ok) {
+                    alert("✅ Cambios guardados correctamente en RDS");
+                    location.href = 'monitoreo-peliculas.html';
+                } else {
+                    alert("❌ Error al actualizar");
+                }
+            } catch (error) {
+                alert("❌ Error de comunicación con el servidor");
+            }
+        });
+
+        window.onload = cargarDatos;
+    </script>
+</body>
+</html>

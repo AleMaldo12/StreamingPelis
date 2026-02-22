@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Pelicula</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white font-sans min-h-screen">
+
+  <script>
+    // 1. Obtenemos los datos del almacenamiento
+    const nombreGuardado = localStorage.getItem('usuarioNombre');
+    const rolGuardado = localStorage.getItem('usuarioRol');
+
+    console.log("Verificando acceso:", { nombre: nombreGuardado, rol: rolGuardado });
+
+    // 2. Si no es ADMIN, lo sacamos de aquí
+    if (!nombreGuardado || rolGuardado !== 'ADMIN') {
+        console.error("Acceso denegado. Redirigiendo...");
+        window.location.href = 'index.html'; 
+    }
+</script>
+
+    <nav class="bg-zinc-900 border-b border-zinc-800 p-4 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <h1 class="text-2xl font-black text-red-600 tracking-tighter cursor-pointer" onclick="location.href='index.html'">PELICULA</h1>
+                <span class="bg-zinc-800 text-zinc-400 text-[10px] px-2 py-1 rounded font-bold uppercase tracking-widest">Admin Panel</span>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div class="text-right hidden sm:block">
+                    <p id="admin-name" class="text-sm font-bold leading-none">Cargando...</p>
+                    <p class="text-[10px] text-zinc-500 uppercase">Administrador de AWS</p>
+                </div>
+                <button onclick="logout()" class="bg-zinc-800 hover:bg-red-600 p-2 rounded-full transition duration-300">
+                    <i class="fas fa-sign-out-alt px-1"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 md:p-12">
+        <header class="mb-10">
+            <h2 class="text-4xl font-extrabold tracking-tight">Bienvenido al Centro de Control</h2>
+            <p class="text-zinc-500 mt-2">Gestiona contenidos, usuarios y suscriptores de la base de datos RDS.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <div onclick="location.href='reg-peliculas.html'" 
+                 class="group bg-zinc-900 p-8 rounded-2xl border border-zinc-800 hover:border-red-600 transition-all duration-300 cursor-pointer shadow-xl">
+                <div class="w-14 h-14 bg-red-600/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-red-600 transition-colors">
+                    <i class="fas fa-film text-2xl text-red-600 group-hover:text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Registro de Películas</h3>
+                <p class="text-zinc-500 text-sm">Añade títulos, sinopsis y pósters a la nube.</p>
+            </div>
+
+            <div onclick="location.href='monitoreo-peliculas.html'" 
+                 class="group bg-zinc-900 p-8 rounded-2xl border border-zinc-800 hover:border-blue-600 transition-all duration-300 cursor-pointer shadow-xl">
+                <div class="w-14 h-14 bg-blue-600/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors">
+                    <i class="fas fa-desktop text-2xl text-blue-600 group-hover:text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Monitoreo de Catálogo</h3>
+                <p class="text-zinc-500 text-sm">Edita datos o elimina contenido de AWS RDS.</p>
+            </div>
+
+            <div onclick="location.href='reg-clientes.html'" 
+                 class="group bg-zinc-900 p-8 rounded-2xl border border-zinc-800 hover:border-green-600 transition-all duration-300 cursor-pointer shadow-xl">
+                <div class="w-14 h-14 bg-green-600/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-600 transition-colors">
+                    <i class="fas fa-users text-2xl text-green-600 group-hover:text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Registro de Clientes</h3>
+                <p class="text-zinc-500 text-sm">Gestiona suscriptores y planes de pago.</p>
+            </div>
+
+            <div onclick="location.href='registro.html'" 
+                 class="group bg-zinc-900 p-8 rounded-2xl border border-zinc-800 hover:border-purple-600 transition-all duration-300 cursor-pointer shadow-xl">
+                <div class="w-14 h-14 bg-purple-600/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-600 transition-colors">
+                    <i class="fas fa-user-shield text-2xl text-purple-600 group-hover:text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Registro de Usuarios</h3>
+                <p class="text-zinc-500 text-sm">Crea nuevos perfiles administrativos.</p>
+            </div>
+
+        </div>
+
+        <section class="mt-16 p-8 bg-zinc-900/50 rounded-3xl border border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <h4 class="font-bold">Estado del Servidor</h4>
+                <p class="text-xs text-green-500 flex items-center gap-2 mt-1">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    Conectado a AWS RDS (Instancia: Pelicula-DB)
+                </p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="location.href='index.html'" class="text-sm font-bold text-zinc-400 hover:text-white transition">Ver Web Pública</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Cargar nombre del admin
+        document.getElementById('admin-name').innerText = localStorage.getItem('usuarioNombre') || 'Admin';
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

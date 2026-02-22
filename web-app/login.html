@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Pelicula</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1574267432553-4b4628081c31?q=80&w=2066');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-black/80 backdrop-blur-md p-10 rounded-lg shadow-2xl w-full max-w-md border border-zinc-800">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-black text-red-600 tracking-tighter cursor-pointer" onclick="location.href='index.html'">PELICULA</h1>
+        </div>
+
+        <h2 class="text-2xl font-bold text-white mb-6 text-center">Inicia Sesión</h2>
+
+        <form id="formLogin" class="space-y-5">
+            <div>
+                <input type="email" id="email" required placeholder="Correo electrónico" 
+                       class="w-full p-4 bg-zinc-800 text-white rounded focus:ring-2 focus:ring-red-600 outline-none transition">
+            </div>
+            
+            <div class="relative">
+                <input type="password" id="password" required placeholder="Contraseña" 
+                       class="w-full p-4 bg-zinc-800 text-white rounded focus:ring-2 focus:ring-red-600 outline-none transition">
+            </div>
+
+            <button type="submit" id="btnEntrar"
+                    class="w-full bg-red-600 text-white py-3 rounded font-bold hover:bg-red-700 transition transform active:scale-95 flex justify-center items-center">
+                <span>Entrar</span>
+            </button>
+        </form>
+
+        <div class="mt-8 text-zinc-500 text-sm text-center">
+            ¿Eres nuevo en Pelicula? 
+            <a href="registro.html" class="text-white hover:underline font-bold">Regístrate ahora</a>.
+        </div>
+        
+        <div class="mt-4 text-xs text-zinc-600 text-center">
+            Esta página está protegida por AWS RDS y Spring Security.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('formLogin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnEntrar');
+            btn.innerHTML = `<span class="animate-spin mr-2">⏳</span> Validando...`;
+            btn.disabled = true;
+
+            const credenciales = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                // Llamada a tu API de Kotlin
+                const respuesta = await fetch("http://localhost:8080/api/usuarios/login", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(credenciales)
+                });
+
+                const resultado = await respuesta.json();
+
+                if (respuesta.ok) {
+                    // Guardar datos en el navegador
+                    localStorage.setItem('usuarioNombre', resultado.nombre);
+                    localStorage.setItem('usuarioRol', resultado.rol);
+
+                    // Redirección lógica
+                    if (resultado.rol === 'ADMIN') {
+                        window.location.href = "dashboard.html";
+                    } else {
+                        window.location.href = "index.html";
+                    }
+                } else {
+                    alert("Error: " + (resultado.error || "Credenciales no coinciden"));
+                    btn.innerHTML = "Entrar";
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                alert("No se pudo conectar con el servidor de AWS. Verifica que el API esté corriendo.");
+                btn.innerHTML = "Entrar";
+                btn.disabled = false;
+            }
+        });
+
+        // Si ya está logueado, redirigir automáticamente fuera del login
+        window.onload = () => {
+            if (localStorage.getItem('usuarioNombre')) {
+                location.href = localStorage.getItem('usuarioRol') === 'ADMIN' ? 'dashboard.html' : 'index.html';
+            }
+        };
+    </script>
+</body>
+</html>

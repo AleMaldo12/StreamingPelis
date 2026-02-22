@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelicula - Streaming de Nueva Generación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .pelicula-card:hover img { transform: scale(1.08); }
+        .hero-gradient {
+            background: linear-gradient(to top, #000 5%, transparent 50%),
+                        linear-gradient(to right, #000 10%, transparent 60%);
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-sans overflow-x-hidden">
+
+    <nav id="navbar" class="fixed w-full z-50 p-6 flex justify-between items-center transition-all duration-500">
+        <div class="flex items-center gap-10">
+            <h1 class="text-3xl font-black text-red-600 tracking-tighter cursor-pointer" onclick="location.href='index.html'">PELICULA</h1>
+            <div class="hidden md:flex gap-6 text-sm font-medium">
+                <a href="#" class="hover:text-gray-400 transition">Inicio</a>
+                <a href="#" class="hover:text-gray-400 transition">Series</a>
+                <a href="#" class="hover:text-gray-400 transition">Películas</a>
+                <a href="#" class="hover:text-gray-400 transition">Novedades populares</a>
+            </div>
+        </div>
+        
+        <div id="auth-section" class="flex items-center gap-6">
+            </div>
+    </nav>
+
+    <header class="relative h-[85vh] w-full flex items-center p-12 overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1925" 
+             class="absolute inset-0 w-full h-full object-cover brightness-50">
+        <div class="absolute inset-0 hero-gradient"></div>
+        
+        <div class="relative z-10 max-w-2xl mt-20">
+            <span class="bg-zinc-800 text-xs font-bold px-2 py-1 rounded mb-4 inline-block">ESTRENO HOY</span>
+            <h2 class="text-6xl md:text-8xl font-black mb-4 leading-none tracking-tight">CÓDIGO <br><span class="text-red-600">AWS</span></h2>
+            <p class="text-lg text-gray-300 mb-8 max-w-md">Explora el catálogo más robusto conectado a la nube. Calidad 4K y latencia mínima garantizada por RDS.</p>
+            <div class="flex gap-4">
+                <button class="bg-white text-black px-8 py-3 rounded font-bold hover:bg-gray-200 transition flex items-center gap-2">
+                    <i class="fas fa-play"></i> Reproducir
+                </button>
+                <button class="bg-zinc-600/50 text-white px-8 py-3 rounded font-bold hover:bg-zinc-600 transition flex items-center gap-2">
+                    <i class="fas fa-info-circle"></i> Más información
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-20 px-6 md:px-12 -mt-20 pb-20">
+        <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+            <span class="w-1 h-6 bg-red-600 block"></span>
+            Tendencias en AWS RDS
+        </h3>
+        
+        <div id="grid-peliculas" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div class="animate-pulse bg-zinc-900 h-80 rounded-lg"></div>
+            <div class="animate-pulse bg-zinc-900 h-80 rounded-lg"></div>
+            <div class="animate-pulse bg-zinc-900 h-80 rounded-lg"></div>
+            <div class="animate-pulse bg-zinc-900 h-80 rounded-lg"></div>
+        </div>
+    </main>
+
+    <footer class="p-12 border-t border-zinc-800 text-gray-500 text-sm flex flex-col items-center">
+        <p class="mb-4">© 2026 Pelicula. Todos los derechos reservados. Powered by Spring Boot & AWS.</p>
+        <div class="flex gap-6">
+            <a href="#" class="hover:underline">Privacidad</a>
+            <a href="#" class="hover:underline">Términos de uso</a>
+            <a href="#" class="hover:underline">Contacto</a>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Manejo del Scroll para la Navbar
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-black', 'shadow-2xl');
+            } else {
+                nav.classList.remove('bg-black', 'shadow-2xl');
+            }
+        });
+
+        // 2. Control de Sesión (Navbar dinámica)
+        function actualizarAuth() {
+            const authSection = document.getElementById('auth-section');
+            const nombre = localStorage.getItem('usuarioNombre');
+            const rol = localStorage.getItem('usuarioRol');
+
+            if (nombre) {
+                authSection.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        ${rol === 'ADMIN' ? '<a href="dashboard.html" class="text-xs font-bold text-red-500 border border-red-500 px-2 py-1 rounded">PANEL ADMIN</a>' : ''}
+                        <span class="text-sm font-medium">Hola, <b>${nombre}</b></span>
+                        <button onclick="logout()" class="text-zinc-400 hover:text-white"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                `;
+            } else {
+                authSection.innerHTML = `
+                    <a href="login.html" class="text-sm font-bold hover:text-gray-300">Entrar</a>
+                    <a href="registro.html" class="bg-red-600 px-4 py-2 rounded text-sm font-bold hover:bg-red-700 transition">Unirse ahora</a>
+                `;
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // 3. Cargar Películas desde la API
+        async function fetchPeliculas() {
+            try {
+                const response = await fetch("http://localhost:8080/api/peliculas");
+                const peliculas = await response.json();
+                const grid = document.getElementById('grid-peliculas');
+                
+                if (peliculas.length === 0) {
+                    grid.innerHTML = '<p class="col-span-full text-center text-gray-500 py-10">No hay películas registradas en AWS.</p>';
+                    return;
+                }
+
+                grid.innerHTML = peliculas.map(p => `
+                    <div class="pelicula-card group cursor-pointer transition-all">
+                        <div class="relative overflow-hidden rounded-md bg-zinc-900 aspect-[2/3]">
+                            <img src="${p.urlImagen || 'https://via.placeholder.com/400x600?text=Sin+Poster'}" 
+                                 class="w-full h-full object-cover transition duration-500 shadow-lg">
+                            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                                <button class="w-full bg-white text-black py-2 rounded font-bold text-xs mb-2">▶ Ver ahora</button>
+                                <p class="text-[10px] text-gray-300 line-clamp-3">${p.sinopsis || 'Sin descripción disponible.'}</p>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <h4 class="font-bold text-sm truncate">${p.titulo}</h4>
+                            <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+                                <span>${p.anioLanzamiento}</span>
+                                <span class="uppercase border border-zinc-700 px-1 rounded">${p.genero}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error("Error al conectar con la API:", error);
+                document.getElementById('grid-peliculas').innerHTML = '<p class="col-span-full text-red-500">Error: No se pudo conectar con el servidor.</p>';
+            }
+        }
+
+        // Ejecución al cargar
+        window.onload = () => {
+            actualizarAuth();
+            fetchPeliculas();
+        };
+    </script>
+</body>
+</html>
