@@ -16,6 +16,8 @@ class PeliculaService(private val repository: PeliculaRepository) {
         return repository.findAll(pageable)
     }
 
+    fun buscarPorId(id: Long): Pelicula? = repository.findById(id).orElse(null)
+
     fun listarTodas(): List<Pelicula> = repository.findAll()
 
     fun guardar(pelicula: Pelicula): Pelicula {

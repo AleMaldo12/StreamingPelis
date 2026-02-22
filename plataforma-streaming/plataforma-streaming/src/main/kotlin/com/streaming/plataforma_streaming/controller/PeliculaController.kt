@@ -32,6 +32,14 @@ class PeliculaController(private val service: PeliculaService) {
         return ResponseEntity.ok(resultado)
     }
 
+    @GetMapping("/{id}")
+    fun obtenerPorId(@PathVariable id: Long): ResponseEntity<Pelicula> {
+        val pelicula = service.buscarPorId(id) // Asegúrate de tener este método en el Service
+        return if (pelicula != null) ResponseEntity.ok(pelicula)
+        else ResponseEntity.notFound().build()
+    }
+
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun crear(@RequestBody pelicula: Pelicula): Pelicula = service.guardar(pelicula)

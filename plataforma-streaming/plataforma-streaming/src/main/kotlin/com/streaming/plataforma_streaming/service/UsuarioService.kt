@@ -6,13 +6,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class UsuarioService(private val repository: UsuarioRepository) {
-
-    fun registrar(usuario: Usuario): Usuario {
-        if (repository.findByEmail(usuario.email).isPresent) {
-            throw IllegalArgumentException("El correo ya está registrado.")
-        }
-        return repository.save(usuario)
-    }
-
+    fun registrar(usuario: Usuario): Usuario = repository.save(usuario)
     fun listarTodos(): List<Usuario> = repository.findAll()
+
+    // Cambiado de buscarPorCorreo a buscarPorEmail
+    fun buscarPorEmail(email: String): Usuario? = repository.findByEmail(email)
 }

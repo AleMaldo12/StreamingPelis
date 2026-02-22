@@ -8,15 +8,8 @@ import java.time.LocalDateTime
 data class Usuario(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-
-    @Column(nullable = false)
-    var nombre: String = "",
-
-    @Column(nullable = false, unique = true)
-    var email: String = "",
-
-    @Column(nullable = false)
-    var password: String = "", // ¡Nota: En el futuro esto debe ir encriptado!
-
-    val fechaRegistro: LocalDateTime = LocalDateTime.now()
+    val nombre: String = "",
+    val email: String = "",
+    val password: String = "",
+    val rol: String = "CASUAL" // "ADMIN" o "CASUAL"
 )
