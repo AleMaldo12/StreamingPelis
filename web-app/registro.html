@@ -2,37 +2,90 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <script src="https://cdn.tailwindcss.com"></script>
     <title>Registro - Pelicula</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black text-white flex items-center justify-center h-screen">
-    <div class="bg-zinc-900 p-8 rounded-lg shadow-2xl w-96">
-        <h2 class="text-2xl font-bold mb-6 text-red-600">Crear Cuenta</h2>
-        <form id="formRegistro" class="space-y-4">
-            <input type="text" id="nombre" placeholder="Nombre completo" class="w-full p-2 bg-zinc-800 rounded">
-            <input type="email" id="email" placeholder="Correo electrónico" class="w-full p-2 bg-zinc-800 rounded">
-            <input type="password" id="password" placeholder="Contraseña" class="w-full p-2 bg-zinc-800 rounded">
-            <button type="submit" class="w-full bg-red-600 py-2 rounded font-bold hover:bg-red-700">Registrar</button>
+<body class="bg-black text-white flex items-center justify-center min-h-screen font-sans">
+
+    <div class="bg-zinc-900 p-10 rounded-2xl shadow-2xl border border-zinc-800 w-full max-w-md">
+        <h2 class="text-3xl font-black text-red-600 mb-2 tracking-tighter text-center">PELICULA</h2>
+        <p class="text-zinc-500 text-center mb-8 text-sm">Crea tu cuenta para el catálogo Cloud</p>
+
+        <form id="formRegistro" class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Nombre Completo</label>
+                <input type="text" id="nombre" required 
+                       class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Email</label>
+                <input type="email" id="email" required 
+                       class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Contraseña</label>
+                <input type="password" id="password" required 
+                       class="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 focus:border-red-600 outline-none transition">
+            </div>
+
+            <button type="submit" id="btnRegistro"
+                    class="w-full bg-red-600 py-3 rounded-lg font-bold hover:bg-red-700 transition transform active:scale-95 shadow-lg shadow-red-900/20">
+                REGISTRARSE
+            </button>
         </form>
+
+        <p class="mt-6 text-center text-zinc-500 text-sm">
+            ¿Ya tienes cuenta? <a href="login.html" class="text-white hover:underline">Inicia sesión</a>
+        </p>
     </div>
 
-    <script src="js/api.js"></script>
     <script>
+        // URL BASE de tu API en AWS
+        const API_USUARIOS = "//pelicula-api.us-east-2.elasticbeanstalk.com//api/usuarios";
+
         document.getElementById('formRegistro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const usuario = {
-                nombre: document.getElementById('nombre').value,
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value,
-                rol: "CASUAL"
+            const btn = document.getElementById('btnRegistro');
+            
+            // 1. Obtener valores
+            const nombre = document.getElementById('nombre').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // 2. Crear objeto (Debe coincidir con tu clase Usuario.kt)
+            const nuevoUsuario = {
+                nombre: nombre,
+                email: email,
+                password: password,
+                rol: "USER" // Valor por defecto
             };
 
-            const res = await registrarUsuario(usuario);
-            if (res.ok) {
-                alert("Usuario registrado en AWS con éxito");
-                window.location.href = "index.html";
-            } else {
-                alert("Error al registrar usuario");
+            btn.innerText = "Registrando...";
+            btn.disabled = true;
+
+            try {
+                // 3. Petición POST a AWS
+                const response = await fetch(API_USUARIOS, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(nuevoUsuario)
+                });
+
+                if (response.ok) {
+                    alert("¡Cuenta creada con éxito! Ahora puedes iniciar sesión.");
+                    window.location.href = "login.html";
+                } else {
+                    const errorMsg = await response.text();
+                    alert("Error en el registro: " + (errorMsg || "Verifica tus datos."));
+                }
+            } catch (error) {
+                console.error("Error de red:", error);
+                alert("No se pudo conectar con el servidor de AWS. Verifica tu conexión o el estado de Beanstalk.");
+            } finally {
+                btn.innerText = "REGISTRARSE";
+                btn.disabled = false;
             }
         });
     </script>
