@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@CrossOrigin(origins = ["*"])
 @RequestMapping("/api/usuarios")
 class UsuarioController(private val service: UsuarioService) {
 
@@ -22,13 +23,20 @@ class UsuarioController(private val service: UsuarioService) {
 
         val usuario = service.buscarPorEmail(emailRecibido)
 
-        // Aquí usamos .password porque así está en tu modelo Usuario
         return if (usuario != null && usuario.password == passRecibida) {
-            ResponseEntity.ok(mapOf("mensaje" to "Acceso exitoso", "nombre" to usuario.nombre))
+            // AGREGAMOS EL ROL AQUÍ:
+            ResponseEntity.ok(mapOf(
+                "mensaje" to "Acceso exitoso",
+                "nombre" to usuario.nombre,
+                "rol" to usuario.rol // <--- Esta es la pieza que faltaba
+            ))
         } else {
             ResponseEntity.status(401).body(mapOf("error" to "Credenciales incorrectas"))
         }
     }
+    
+    @GetMapping
+    fun listarTodos(): List<Usuario> = service.listarTodos() // Asegúrate que el service tenga esta función
 
     @GetMapping("/listar")
     fun obtenerTodos(): List<Usuario> = service.listarTodos()
