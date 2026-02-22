@@ -2,49 +2,56 @@ package com.zenboom.proyect_movie.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.zenboom.proyect_movie.R
+import com.zenboom.proyect_movie.ui.MainActivity
 import com.zenboom.proyect_movie.data.LoginRequest
 import com.zenboom.proyect_movie.data.RetrofitClient
-import kotlinx.coroutines.Dispatchers
+import com.zenboom.proyect_movie.databinding.ActivityLoginBinding
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityLoginBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val etUsuario = findViewById<EditText>(R.id.etUsuario)
-        val etContrasena = findViewById<EditText>(R.id.etContrasena)
-        val btnIngresar = findViewById<Button>(R.id.btnIngresar)
+        binding.btnIngresar.setOnClickListener {
+            val userEmail = binding.etUsuario.text.toString().trim()
+            val userPass = binding.etContrasena.text.toString().trim()
 
-        btnIngresar.setOnClickListener {
-            val user = etUsuario.text.toString()
-            val pass = etContrasena.text.toString()
-
-            if (user.isNotEmpty() && pass.isNotEmpty()) {
-                // Llamamos a la API
-                lifecycleScope.launch {
-                    try {
-                        val response = RetrofitClient.instance.hacerLogin(LoginRequest(user, pass))
-                        if (response.isSuccessful) {
-                            // Login correcto, pasamos a MainActivity
-                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                            finish()
-                        } else {
-                            Toast.makeText(this@LoginActivity, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
-                        }
-                    } catch (e: Exception) {
-                        Toast.makeText(this@LoginActivity, "Error conectando al servidor local", Toast.LENGTH_SHORT).show()
-                    }
-                }
+            if (userEmail.isNotEmpty() && userPass.isNotEmpty()) {
+                realizarLogin(userEmail, userPass)
             } else {
-                Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Por favor, completa los campos", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun realizarLogin(email: String, pass: String) {
+        val request = LoginRequest(email = email, password = pass)
+
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instance.hacerLogin(request)
+
+                if (response.isSuccessful && response.body() != null) {
+                    // Éxito: El usuario existe en RDS
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    finish()
+                } else {
+                    // El servidor respondió pero los datos no coinciden
+                    Toast.makeText(this@LoginActivity, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                // Fallo de red (URL incorrecta o sin internet)
+                Log.e("API_ERROR", "Error: ${e.message}")
+                Toast.makeText(this@LoginActivity, "Error de conexión con AWS", Toast.LENGTH_LONG).show()
             }
         }
     }

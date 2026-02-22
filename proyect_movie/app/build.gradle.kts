@@ -4,6 +4,11 @@ plugins {
 }
 
 android {
+
+    buildFeatures {
+        viewBinding = true
+    }
+
     namespace = "com.zenboom.proyect_movie"
     compileSdk = 36
 

@@ -4,9 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    // Si usas el emulador de Android: 10.0.2.2
-    // Si usas celular físico: La IP de tu PC (ej. 192.168.1.XX)
-    private const val BASE_URL = "http://10.0.2.2:8080/"
+    private const val BASE_URL = "http://pelicula-api.us-east-2.elasticbeanstalk.com/"
 
     val instance: ApiService by lazy {
         Retrofit.Builder()

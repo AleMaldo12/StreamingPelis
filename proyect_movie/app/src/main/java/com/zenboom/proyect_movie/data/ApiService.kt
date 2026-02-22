@@ -6,10 +6,14 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
+    // Para MainActivity: debe llamarse 'obtenerPeliculas'
     @GET("api/peliculas")
-    suspend fun getPeliculas(): Response<List<Pelicula>>
     suspend fun obtenerPeliculas(): Response<List<Pelicula>>
 
+    // Para LoginActivity: debe llamarse 'hacerLogin'
     @POST("api/usuarios/login")
-    suspend fun hacerLogin(@Body request: LoginRequest): Response<Void> // Cambia Void si tu API devuelve un token o un objeto
+    suspend fun hacerLogin(@Body request: LoginRequest): Response<Usuario>
+
+    @GET("api/usuarios")
+    suspend fun getUsuarios(): Response<List<Usuario>>
 }
